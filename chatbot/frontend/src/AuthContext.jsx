@@ -25,7 +25,7 @@ export function AuthProvider({ children }) {
 
   const fetchUser = async () => {
     try {
-      const res = await axios.get('http://localhost:8000/api/auth/me');
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`);
       setUser(res.data);
     } catch (err) {
       console.error("Failed to fetch user", err);
@@ -39,7 +39,7 @@ export function AuthProvider({ children }) {
     const formData = new URLSearchParams();
     formData.append('username', username);
     formData.append('password', password);
-    const res = await axios.post('http://localhost:8000/api/auth/login', formData, {
+    const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, formData, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
@@ -49,13 +49,13 @@ export function AuthProvider({ children }) {
   };
 
   const register = async (username, email, password) => {
-    await axios.post('http://localhost:8000/api/auth/register', { username, email, password });
+    await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`, { username, email, password });
     await login(username, password);
   };
 
   const continueAsGuest = async () => {
     try {
-      const res = await axios.post('http://localhost:8000/api/auth/guest');
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/guest`);
       setToken(res.data.access_token);
       localStorage.setItem('token', res.data.access_token);
     } catch (err) {

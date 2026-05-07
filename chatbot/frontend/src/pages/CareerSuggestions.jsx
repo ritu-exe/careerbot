@@ -23,7 +23,7 @@ export default function CareerSuggestions() {
     formData.append("file", file);
 
     try {
-      const response = await axios.post('http://localhost:8000/api/upload-resume', formData, {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/upload-resume`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setResults(response.data);

@@ -15,7 +15,7 @@ export default function YouTube() {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`http://localhost:8000/api/youtube?query=${encodeURIComponent(query)}`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/youtube?query=${encodeURIComponent(query)}`);
       setVideos(response.data.items || []);
     } catch (err) {
       setError(err.response?.data?.detail || "Error fetching YouTube videos");

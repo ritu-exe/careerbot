@@ -29,7 +29,7 @@ export default function Chatbot() {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:8000/api/chat', { query: userMessage.content });
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/chat`, { query: userMessage.content });
       setMessages(prev => [...prev, { role: 'bot', content: response.data.reply }]);
     } catch (err) {
       setMessages(prev => [...prev, { role: 'bot', content: "❌ " + (err.response?.data?.detail || "An error occurred.") }]);
