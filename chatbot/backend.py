@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
-import google.generativeai as genai
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Depends, status
+from fastapi import FastAPI, UploadFile, File, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
@@ -9,11 +8,9 @@ from sqlalchemy.orm import Session
 from datetime import timedelta
 import fitz  # PyMuPDF
 import requests
-import json
 import uvicorn
 import uuid
-from typing import List, Optional
-from dotenv import load_dotenv
+from typing import Optional
 
 import models
 from database import engine, get_db
@@ -254,4 +251,4 @@ async def get_youtube_videos(query: str):
         raise HTTPException(status_code=response.status_code, detail="Error fetching YouTube videos")
 
 if __name__ == "__main__":
-    uvicorn.run("backend:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("backend:app", host="0.0.0.0", port=8000)
