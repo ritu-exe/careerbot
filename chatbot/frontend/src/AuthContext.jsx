@@ -11,17 +11,26 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
+  const [waking, setWaking] = useState(false);
 
   useEffect(() => {
-    if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      fetchUser();
-    } else {
-      delete axios.defaults.headers.common['Authorization'];
-      setUser(null);
-      setLoading(false);
-    }
-  }, [token]);
+    const wakeUp = async () => {
+      setWaking(true);
+      try {
+        await axios.get(`${import.meta.env.VITE_API_URL}/`, { timeout: 60000 });
+      } catch (_) {}
+      setWaking(false);
+      if (token) {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        fetchUser();
+      } else {
+        delete axios.defaults.headers.common['Authorization'];
+        setUser(null);
+        setLoading(false);
+      }
+    };
+    wakeUp();
+  }, []);
 
   const fetchUser = async () => {
     try {
@@ -76,12 +85,20 @@ export function AuthProvider({ children }) {
     register,
     logout,
     continueAsGuest,
-    loading
+    loading,
+    waking
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {waking ? (
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', gap: '20px' }}>
+          <div style={{ width: '48px', height: '48px', border: '4px solid rgba(139,92,246,0.2)', borderTop: '4px solid #8b5cf6', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+          <p style={{ color: '#a1a1aa', fontSize: '1rem' }}>🚀 Waking up the server, please wait...</p>
+          <p style={{ color: '#71717a', fontSize: '0.85rem' }}>This may take up to 60 seconds on first visit</p>
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        </div>
+      ) : !loading ? children : null}
     </AuthContext.Provider>
   );
 }
